@@ -1,6 +1,7 @@
 "use client"
 
 import { supabase } from "../lib/supabase"
+import { Trash2, ExternalLink } from "lucide-react"
 
 export default function BookmarkList({ bookmarks, onBookmarkDeleted }) {
 
@@ -10,38 +11,40 @@ export default function BookmarkList({ bookmarks, onBookmarkDeleted }) {
       .delete()
       .eq("id", id)
 
-    if (error) {
-      console.log("Delete error:", error.message)
-    } else {
+    if (!error) {
       onBookmarkDeleted()
     }
   }
 
   return (
-    <div className="flex flex-col gap-2 w-80">
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {bookmarks.map((bookmark) => (
         <div
           key={bookmark.id}
-          className="border p-3 rounded flex justify-between items-center"
+          className="bg-white rounded-xl shadow-md p-6 transition transform hover:-translate-y-1 hover:shadow-xl"
         >
-          <div>
-            <p className="font-semibold">{bookmark.title}</p>
-            <a
-              href={bookmark.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-blue-500"
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="font-semibold text-lg text-gray-800">
+              {bookmark.title}
+            </h3>
+
+            <button
+              onClick={() => handleDelete(bookmark.id)}
+              className="text-red-500 cursor-pointer hover:text-red-700 transition"
             >
-              {bookmark.url}
-            </a>
+              <Trash2 size={22} />
+            </button>
           </div>
 
-          <button
-            onClick={() => handleDelete(bookmark.id)}
-            className="text-red-500 text-sm"
+          <a
+            href={bookmark.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 text-sm flex items-center gap-2 hover:underline break-all"
           >
-            Delete
-          </button>
+            {bookmark.url}
+            <ExternalLink size={16} />
+          </a>
         </div>
       ))}
     </div>

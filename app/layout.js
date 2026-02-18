@@ -1,3 +1,5 @@
+import "./globals.css"
+
 export const metadata = {
   title: "Smart Bookmark",
   description: "Private real-time updating bookmark manager",

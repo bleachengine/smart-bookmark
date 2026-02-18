@@ -5,7 +5,7 @@ import { supabase } from "../../lib/supabase"
 import { useRouter } from "next/navigation"
 import BookmarkForm from "../../components/BookmarkForm"
 import BookmarkList from "../../components/BookmarkList"
-
+import { Bookmark } from "lucide-react";
 
 export default function Dashboard() {
     const router = useRouter()
@@ -18,12 +18,12 @@ export default function Dashboard() {
             .from("bookmarks")
             .select("*")
             .order("created_at", { ascending: false })
-        //fetches the data from sb and setting up in bookmark state
+                                                    //fetches the data from sb and setting up in bookmark state
         if (error) {
             console.log("Fetch error:", error.message)
         } else {
             setBookmarks(data)
-            console.log(data)
+            // console.log(data)
         }
     }
 
@@ -78,19 +78,49 @@ export default function Dashboard() {
 
     if (!user) return null
 
-    return (
-        <main className="flex min-h-screen items-center justify-center flex-col gap-6">
+return (
+  <div className="h-screen flex bg-gray-100">
 
-            <h1 className="text-2xl font-semibold">Your Bookmarks</h1>
+    {/* Sidebar */}
+    <div className="w-64 bg-white shadow-md p-6 flex flex-col justify-between fixed h-full">
+      <div>
+        <div className="flex gap-2 justify-center items-center text-blue-600 mb-6"> 
+            <h2 className="text-xl font-bold  ">
+          SmartBookmark 
+        </h2>
+        <Bookmark fill="currentColor" size={26} strokeWidth={1.5} />
+        </div>
+        <div className="text-sm text-gray-500 mb-2">
+          Logged in as:
+        </div>
+        <div className="font-medium text-gray-800 break-words">
+          {user.email}
+        </div>
+      </div>
 
-            <BookmarkForm user={user} onBookmarkAdded={fetchBookmarks} />
+      <button
+        onClick={handleLogout}
+        className="bg-red-500 cursor-pointer hover:bg-red-700 text-white py-2 rounded transition"
+      >
+        Logout
+      </button>
+    </div>
 
-            <BookmarkList bookmarks={bookmarks} onBookmarkDeleted={fetchBookmarks} />
+    {/* Main Content */}
+    <div className="flex-1 ml-64 p-7 overflow-y-auto">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">
+      
+ Your Bookmarks
+      </h1>
 
-            <button onClick={handleLogout} className="px-6 py-3 bg-red-500 text-white rounded-lg">
-                Logout
-            </button>
+      <div className="mb-8">
+        <BookmarkForm  user={user} onBookmarkAdded={fetchBookmarks} />
+      </div>
 
-        </main>
-    )
+      <BookmarkList bookmarks={bookmarks} onBookmarkDeleted={fetchBookmarks} />
+    </div>
+
+  </div>
+)
+
 }
