@@ -1,55 +1,34 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { supabase } from "../lib/supabase"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
-
-  const [user, setUser] = useState(null)
+  const router = useRouter()
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser()
-      console.log("bfddovdfvdomosp:",data)
-      setUser(data.user)
-    }
-
-    getUser()
-  }, [])
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) {
+        router.push("/dashboard")
+      }
+    })
+  }, [router])
 
   const handleLogin = async () => {
     await supabase.auth.signInWithOAuth({
-      provider: "google",
+      provider: "google"
     })
   }
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-  }
-
   return (
-    <main className="flex min-h-screen items-center justify-center flex-col gap-4">
-
-      {!user ? (
-        <button
-          onClick={handleLogin}
-          className="px-6 py-3 bg-black text-white rounded-lg"
-        >
-          Sign in with Google
-        </button>
-      ) : (
-        <>
-          <p>Welcome, {user.email}</p>
-          <button
-            onClick={handleLogout}
-            className="px-6 py-3 bg-red-500 text-white rounded-lg"
-          >
-            Logout
-          </button>
-        </>
-      )}
-
+    <main className="flex min-h-screen items-center justify-center">
+      <button
+        onClick={handleLogin}
+        className="px-6 py-3 bg-black text-white rounded-lg"
+      >
+        Sign in with Google
+      </button>
     </main>
   )
 }
