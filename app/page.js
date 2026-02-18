@@ -10,13 +10,13 @@ export default function Home() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
-        router.push("/dashboard")
+        router.push("/dashboard")                 // auto redirect to dashboard if bro alr loggedin
       }
     })
   }, [router])
 
   const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
+    await supabase.auth.signInWithOAuth({           //sb oauth login using google
       provider: "google"
     })
   }
