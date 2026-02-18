@@ -18,7 +18,7 @@ export default function Dashboard() {
             .from("bookmarks")
             .select("*")
             .order("created_at", { ascending: false })
-                                                                    //fetches the data from sb and setting up in bookmark state
+        //fetches the data from sb and setting up in bookmark state
         if (error) {
             console.log("Fetch error:", error.message)
         } else {
@@ -44,6 +44,33 @@ export default function Dashboard() {
         checkUser()
     }, [router])
 
+
+
+    useEffect(() => {
+        if (!user) return
+
+        const channel = supabase
+            .channel("realtime-bookmarks")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "bookmarks",
+                    filter: `user_id=eq.${user.id}`
+                },
+                () => {
+                    fetchBookmarks()                        //realtime chnages in dashboard
+                }
+            )
+            .subscribe()
+
+        return () => {
+            supabase.removeChannel(channel)
+        }
+    }, [user])
+
+
     const handleLogout = async () => {
         await supabase.auth.signOut()   // sign out the user and redirect it to /
         router.push("/")
@@ -56,11 +83,11 @@ export default function Dashboard() {
 
             <h1 className="text-2xl font-semibold">Your Bookmarks</h1>
 
-            <BookmarkForm  user={user}  onBookmarkAdded={fetchBookmarks}  />
+            <BookmarkForm user={user} onBookmarkAdded={fetchBookmarks} />
 
-            <BookmarkList bookmarks={bookmarks}  onBookmarkDeleted={fetchBookmarks} />
+            <BookmarkList bookmarks={bookmarks} onBookmarkDeleted={fetchBookmarks} />
 
-            <button onClick={handleLogout}  className="px-6 py-3 bg-red-500 text-white rounded-lg">
+            <button onClick={handleLogout} className="px-6 py-3 bg-red-500 text-white rounded-lg">
                 Logout
             </button>
 
