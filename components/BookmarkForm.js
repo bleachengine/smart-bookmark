@@ -35,7 +35,7 @@ export default function BookmarkForm({ user, onBookmarkAdded }) {
   }
 
   return (
-   <div className="bg-white rounded-2xl shadow-lg p-6 w-full">
+   <div className="bg-white rounded-2xl shadow-lg p-5 w-full">
   <h2 className="text-xl font-semibold mb-6 text-gray-800">
     Add New Bookmark
   </h2>

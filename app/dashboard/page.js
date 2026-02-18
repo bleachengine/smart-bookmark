@@ -90,12 +90,11 @@ return (
         </h2>
         <Bookmark fill="currentColor" size={26} strokeWidth={1.5} />
         </div>
-        <div className="text-sm text-gray-500 mb-2">
-          Logged in as:
+        <div className="flex gap-2 justify-center">
+          <span className="text-gray-600 mb-2">Logged in as:</span>
+          <span className="  text-black break-words"> {user.user_metadata.full_name}</span>
         </div>
-        <div className="font-medium text-gray-800 break-words">
-          {user.email}
-        </div>
+       
       </div>
 
       <button
@@ -108,7 +107,7 @@ return (
 
     {/* Main Content */}
     <div className="flex-1 ml-64 p-7 overflow-y-auto">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">
+      <h1 className="text-2xl font-bold mb-5 text-gray-800">
       
  Your Bookmarks
       </h1>
