@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabase"
 import { useRouter } from "next/navigation"
 import { Space_Grotesk, Manrope } from "next/font/google"
@@ -17,20 +17,38 @@ const bodyFont = Manrope({
 
 export default function Home() {
   const router = useRouter()
+  const [isCheckingSession, setIsCheckingSession] = useState(true)
+  const [isSigningIn, setIsSigningIn] = useState(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
         router.push("/dashboard")                 // auto redirect to dashboard if bro alr loggedin
+      } else {
+        setIsCheckingSession(false)
       }
     })
   }, [router])
 
   const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({           //sb oauth login using google
+    setIsSigningIn(true)
+    const { error } = await supabase.auth.signInWithOAuth({           //sb oauth login using google
       provider: "google"
     })
+
+    if (error) {
+      setIsSigningIn(false)
+    }
   }
+
+  if (isCheckingSession || isSigningIn) {
+    return (
+      <main className="flex min-h-screen items-center justify-center">
+        <img src="/bookmark-load.gif" alt="Loading" className="h-44"/>
+      </main>
+    )
+  }
+
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,_#dbeafe_0%,_#eff6ff_42%,_#f8fafc_72%,_#ffffff_100%)] px-6">
