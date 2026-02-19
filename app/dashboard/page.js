@@ -31,7 +31,7 @@ export default function Dashboard() {
     useEffect(() => {
         const checkUser = async () => {
             const { data } = await supabase.auth.getUser()
-            console.log("Teestbfddovdfvdomosp:", data)
+            // console.log("Teestbfddovdfvdomosp:", data)
             if (!data.user) {
                 router.push("/")                            //check users data from sb
             } else {
@@ -92,7 +92,7 @@ return (
         </div>
         <div className="flex gap-2 justify-center">
           <span className="text-gray-600 mb-2">Logged in as:</span>
-          <span className="  text-black break-words"> {user.user_metadata.full_name}</span>
+          <span className="  text-black break-words"> {user.user_metadata.full_name || "No Name"}</span>
         </div>
        
       </div>
