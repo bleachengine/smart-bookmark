@@ -3,6 +3,12 @@
 import { useState } from "react"
 import { supabase } from "../lib/supabase"
 import { Plus } from "lucide-react"
+import { Space_Grotesk } from "next/font/google"
+
+const headingFont = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["600"],
+})
 
 export default function BookmarkForm({ user, onBookmarkAdded }) {
   const [title, setTitle] = useState("")
@@ -35,41 +41,41 @@ export default function BookmarkForm({ user, onBookmarkAdded }) {
   }
 
   return (
-   <div className="bg-white rounded-2xl shadow-lg p-5 w-full">
-  <h2 className="text-xl font-semibold mb-6 text-gray-800">
-    Add New Bookmark
-  </h2>
+    <div className="w-full rounded-3xl border border-slate-200/70 bg-white/80 p-5 shadow-lg shadow-slate-200/40 backdrop-blur-sm sm:p-6">
+      <h2 className={`${headingFont.className} mb-5 text-2xl font-semibold tracking-tight text-slate-900`}>
+        Add Bookmark
+      </h2>
 
-  <form
-    onSubmit={handleSubmit}
-    className="flex flex-col md:flex-row items-stretch gap-4"
-  >
-    <input
-      type="text"
-      placeholder="Title"
-      value={title}
-      onChange={(e) => setTitle(e.target.value)}
-      className="flex-1 px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-    />
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_1fr_auto]"
+      >
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="rounded-xl border border-slate-300/80 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-slate-500 focus:outline-none"
+        />
 
-    <input
-      type="text"
-      placeholder="URL"
-      value={url}
-      onChange={(e) => setUrl(e.target.value)}
-      className="flex-1 px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-    />
+        <input
+          type="text"
+          placeholder="URL"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          className="rounded-xl border border-slate-300/80 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-500 focus:border-slate-500 focus:outline-none"
+        />
 
-    <button
-      type="submit"
-      disabled={loading}
-      className="cursor-pointer flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium hover:scale-105 transition disabled:opacity-50"
-    >
-      <Plus size={18} />
-      {loading ? "Adding..." : "Add"}
-    </button>
-  </form>
-</div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3 font-medium text-white transition hover:bg-slate-700 disabled:opacity-50"
+        >
+          <Plus size={18} />
+          {loading ? "Adding..." : "Add"}
+        </button>
+      </form>
+    </div>
 
   )
 }
