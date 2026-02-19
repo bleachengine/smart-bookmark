@@ -1,36 +1,203 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Smart Bookmark App
 
-## Getting Started
+A simple private bookmark manager built with:
 
-First, run the development server:
+- Next.js (App Router)
+- Supabase (Auth, Database, Realtime)
+- Tailwind CSS
+- Deployed on Vercel
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## Features
+
+- Sign in using Google OAuth
+- Add bookmarks (title + URL)
+- See only my own bookmarks
+- Delete my own bookmarks
+- Real-time updates across tabs
+- Live deployed version on Vercel
+
+---
+
+## 🚀 What I Built
+
+This app allows users to:
+
+- Sign in using Google OAuth only  
+- Add bookmarks (title + URL)  
+- See only their own bookmarks (private per user)  
+- Delete their own bookmarks  
+- See real-time updates without page refresh  
+- Use the app live on Vercel  
+
+---
+
+## 🧠 Problems I Faced & How I Solved Them
+
+### 1️⃣ Choosing TypeScript or JavaScript
+
+At first, I was confused whether to use TypeScript or JavaScript.  
+Since I am not very comfortable with TypeScript, I chose JavaScript to move faster and focus on functionality.
+
+---
+
+### 2️⃣ First Time Using Supabase
+
+I had never worked with Supabase before, so it was new to me.
+
+I read the documentation to understand:
+- How to create a Supabase project
+- How to create a client using the project URL and anon key
+- How authentication works
+
+I created a client file using the credentials and connected it to my Next.js app.
+
+---
+
+### 3️⃣ Setting Up Google OAuth
+
+I:
+
+- Created a project in Google Cloud Console
+- Enabled the required API
+- Filled branding details
+- Created an OAuth Client
+- Added the callback URL from Supabase
+- Copied the Client ID and Client Secret
+- Added them back into Supabase → Google Provider
+
+After that, Google sign-in worked correctly.
+
+---
+
+### 4️⃣ Authentication State Handling
+
+I added logic to:
+
+- Check if a user is logged in
+- Show user email after login
+- Persist session after refresh
+- Protect the dashboard route
+- Redirect unauthenticated users to the homepage
+
+---
+
+### 5️⃣ Creating the Database Table
+
+I created a `bookmarks` table in Supabase with:
+
+- `id` (UUID, primary key)
+- `user_id` (UUID, foreign key → auth.users)
+- `title`
+- `url`
+- `created_at`
+
+I added a foreign key so only valid authenticated users can own bookmarks.
+
+---
+
+### 6️⃣ Row Level Security (RLS)
+
+RLS was enabled by default, but queries were returning empty results.
+
+The issue was missing policies.
+
+I created policies for:
+
+- SELECT (read own bookmarks)
+- INSERT (add own bookmarks)
+- DELETE (delete own bookmarks)
+- UPDATE (edit own bookmarks)
+
+All policies use:
+
+```
+auth.uid() = user_id
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+After this, bookmarks became private per user.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 7️⃣ Realtime Delete Not Working
 
-## Learn More
+Insert was working in real-time across tabs,  
+but delete was not reflecting in the second tab.
 
-To learn more about Next.js, take a look at the following resources:
+After researching, I found that Supabase requires:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+REPLICA IDENTITY FULL
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+I could not find this option in the UI.
 
-## Deploy on Vercel
+I used the SQL Editor and ran:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```sql
+ALTER TABLE public.bookmarks REPLICA IDENTITY FULL;
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+After that, delete worked in real-time across tabs.
+
+---
+
+### 8️⃣ Tailwind CSS Version Issue
+
+I initially used Tailwind v3 style setup, but my project was using Tailwind v4.
+
+After confirming the correct setup in `globals.css`:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+Tailwind styling worked properly.
+
+---
+
+### 9️⃣ Deployment Redirect Issue
+
+After deploying to Vercel, Google login was still redirecting to:
+
+```
+localhost:3000/dashboard
+```
+
+The issue was that Supabase Site URL was still set to localhost.
+
+I fixed it by:
+
+- Updating Site URL in Supabase
+- Adding my Vercel domain to Redirect URLs
+
+After that, production login worked correctly.
+
+---
+
+### 🔟 Google OAuth Name Showing Supabase Random String
+
+Google was showing my Supabase project reference instead of my app name.
+
+I updated:
+
+- App name in Google Branding
+- Authorized domains
+- OAuth configuration
+
+Since the app is in testing mode, this behavior is expected, and login works correctly.
+
+---
+
+##  Final Result
+
+- Google OAuth working
+- Private bookmarks per user
+- Real-time insert and delete
+- RLS fully configured
+- Protected dashboard route
+- Clean UI with Tailwind
+- Successfully deployed on Vercel
