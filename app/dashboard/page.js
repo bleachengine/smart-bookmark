@@ -102,9 +102,9 @@ return (
               </h2>
             </div>
 
-            <div className="rounded-2xl flex items-center gap-2 border border-slate-800 bg-slate-900/80 p-3">
-              <p className="text-[14px] tracking-[0.10em] text-slate-400 uppercase">Logged in as:</p>
-              <p className="text-[14px] break-words tracking-[0.10em]  font-medium uppercase text-slate-100">
+            <div className="rounded-2xl flex justify-center items-center gap-2 border border-slate-800 bg-slate-900/80 p-3">
+              <p className="text-[12px] tracking-[0.05em] text-slate-400 uppercase">Logged in as:</p>
+              <p className="text-[12px] break-words tracking-[0.05em]  font-medium uppercase text-slate-100">
                 {user.user_metadata.full_name || "No Name"}
               </p>
             </div>
